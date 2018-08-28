@@ -4,17 +4,21 @@ namespace CGM208___Lesson_2___Exercise_2
 {
     enum PatternType
     {
-        Horizontal,
-        Vertical
+        TriangleHorizontal,
+        TriangleVertical,
+        Diamond
     }
 
     class Program
     {
-        const int MAX_STAR = 10;
+        const int MAX_TRIANGLE_STAR = 10;
+        const int MAX_DIAMOND_STAR = 9;
+
         const char STAR = '*';
 
-        static readonly ushort[,] baseHorizontalFlagPattern = new ushort[MAX_STAR, 1];
-        static readonly ushort[,] baseVerticalFlagPattern = new ushort[MAX_STAR, 1];
+        static readonly ushort[,] baseHorizontalFlagPattern = new ushort[MAX_TRIANGLE_STAR, 1];
+        static readonly ushort[,] baseVerticalFlagPattern = new ushort[MAX_TRIANGLE_STAR, 1];
+        static readonly ushort[,] baseDiamondFlagPattern = new ushort[MAX_DIAMOND_STAR, 1];
 
         static void Main(string[] args)
         {
@@ -25,8 +29,9 @@ namespace CGM208___Lesson_2___Exercise_2
 
         static void Initialize()
         {
-            InitializeBasePattern(baseHorizontalFlagPattern, MAX_STAR, PatternType.Horizontal);
-            InitializeBasePattern(baseVerticalFlagPattern, MAX_STAR, PatternType.Vertical);
+            InitializeBasePattern(baseHorizontalFlagPattern, MAX_TRIANGLE_STAR, PatternType.TriangleHorizontal);
+            InitializeBasePattern(baseVerticalFlagPattern, MAX_TRIANGLE_STAR, PatternType.TriangleVertical);
+            InitializeBasePattern(baseDiamondFlagPattern, MAX_DIAMOND_STAR, PatternType.Diamond);
         }
 
         static void InitializeBasePattern(ushort[,] pattern, ushort maxCharacter, PatternType patternType)
@@ -39,7 +44,7 @@ namespace CGM208___Lesson_2___Exercise_2
 
             switch (patternType)
             {
-                case PatternType.Horizontal:
+                case PatternType.TriangleHorizontal:
                 {
                     ushort buffer = 1;
                     for (int i = 0; i < maxCharacter; ++i) {
@@ -49,7 +54,7 @@ namespace CGM208___Lesson_2___Exercise_2
                     break;
                 }
 
-                case PatternType.Vertical:
+                case PatternType.TriangleVertical:
                 {
                     ushort buffer = 1;
                     for (int i = 0; i < maxCharacter; ++i) {
@@ -60,6 +65,41 @@ namespace CGM208___Lesson_2___Exercise_2
                     break;
                 }
 
+                case PatternType.Diamond:
+                {
+                    if ((maxCharacter % 2) == 0)
+                        throw new Exception("Max character need to be and odd number..");
+
+                    int midpoint = (int)(maxCharacter / 2);
+                    int midpointFlag = (1 << midpoint);
+                    int buffer = midpointFlag;
+                    int bufferLeft = 0;
+                    int bufferRight = 0;
+
+                    for (int i = 0; i < maxCharacter; ++i) {
+                        if (i < (midpoint + 1)) {
+                            bufferLeft = (midpointFlag << i);
+                            bufferRight = (midpointFlag >> i);
+                            buffer |= (bufferLeft | bufferRight);
+                            pattern[i, 0] = (ushort) buffer;
+                        }
+                        else {
+                            int shiftAmount = (maxCharacter - i);
+
+                            bufferLeft = (midpointFlag << shiftAmount);
+                            bufferRight = (midpointFlag >> shiftAmount);
+
+                            buffer &= ~bufferLeft;
+                            buffer &= ~bufferRight;
+
+                            pattern[i, 0] = (ushort) buffer;
+                            shiftAmount -= 1;
+                        }
+                    }
+
+                    break;
+                }
+
                 default:
                     break;
             }
@@ -67,16 +107,19 @@ namespace CGM208___Lesson_2___Exercise_2
 
         static void PrintResult()
         {
-            PrintPattern(STAR, baseHorizontalFlagPattern, MAX_STAR, false);
+            PrintPattern(STAR, baseHorizontalFlagPattern, MAX_TRIANGLE_STAR, false);
             Console.WriteLine();
 
-            PrintPattern(STAR, baseHorizontalFlagPattern, MAX_STAR, true);
+            PrintPattern(STAR, baseHorizontalFlagPattern, MAX_TRIANGLE_STAR, true);
             Console.WriteLine();
 
-            PrintPattern(STAR, baseVerticalFlagPattern, MAX_STAR, false);
+            PrintPattern(STAR, baseVerticalFlagPattern, MAX_TRIANGLE_STAR, false);
             Console.WriteLine();
 
-            PrintPattern(STAR, baseVerticalFlagPattern, MAX_STAR, true);
+            PrintPattern(STAR, baseVerticalFlagPattern, MAX_TRIANGLE_STAR, true);
+            Console.WriteLine();
+
+            PrintPattern(STAR, baseDiamondFlagPattern, MAX_DIAMOND_STAR, false);
             Console.WriteLine();
         }
 
