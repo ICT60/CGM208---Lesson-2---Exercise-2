@@ -19,6 +19,7 @@ namespace CGM208___Lesson_2___Exercise_2
         static readonly ushort[,] baseHorizontalFlagPattern = new ushort[MAX_TRIANGLE_STAR, 1];
         static readonly ushort[,] baseVerticalFlagPattern = new ushort[MAX_TRIANGLE_STAR, 1];
         static readonly ushort[,] baseDiamondFlagPattern = new ushort[MAX_DIAMOND_STAR, 1];
+        static readonly string[] result = new string[5];
 
         static void Main(string[] args)
         {
@@ -32,6 +33,12 @@ namespace CGM208___Lesson_2___Exercise_2
             InitializeBasePattern(baseHorizontalFlagPattern, MAX_TRIANGLE_STAR, PatternType.TriangleHorizontal);
             InitializeBasePattern(baseVerticalFlagPattern, MAX_TRIANGLE_STAR, PatternType.TriangleVertical);
             InitializeBasePattern(baseDiamondFlagPattern, MAX_DIAMOND_STAR, PatternType.Diamond);
+
+            result[0] = GetStringPattern(STAR, baseHorizontalFlagPattern, MAX_TRIANGLE_STAR, false);
+            result[1] = GetStringPattern(STAR, baseHorizontalFlagPattern, MAX_TRIANGLE_STAR, true);
+            result[2] = GetStringPattern(STAR, baseVerticalFlagPattern, MAX_TRIANGLE_STAR, false);
+            result[3] = GetStringPattern(STAR, baseVerticalFlagPattern, MAX_TRIANGLE_STAR, true);
+            result[4] = GetStringPattern(STAR, baseDiamondFlagPattern, MAX_DIAMOND_STAR, false);
         }
 
         static void InitializeBasePattern(ushort[,] pattern, ushort maxCharacter, PatternType patternType)
@@ -107,24 +114,16 @@ namespace CGM208___Lesson_2___Exercise_2
 
         static void PrintResult()
         {
-            PrintPattern(STAR, baseHorizontalFlagPattern, MAX_TRIANGLE_STAR, false);
-            Console.WriteLine();
-
-            PrintPattern(STAR, baseHorizontalFlagPattern, MAX_TRIANGLE_STAR, true);
-            Console.WriteLine();
-
-            PrintPattern(STAR, baseVerticalFlagPattern, MAX_TRIANGLE_STAR, false);
-            Console.WriteLine();
-
-            PrintPattern(STAR, baseVerticalFlagPattern, MAX_TRIANGLE_STAR, true);
-            Console.WriteLine();
-
-            PrintPattern(STAR, baseDiamondFlagPattern, MAX_DIAMOND_STAR, false);
-            Console.WriteLine();
+            for (int i = 0; i < 5; ++i) {
+                Console.WriteLine(result[i]);
+                Console.WriteLine();
+            }
         }
 
-        static void PrintPattern(char character, ushort[,] pattern, ushort maxCharacter, bool isFlip)
+        static string GetStringPattern(char character, ushort[,] pattern, ushort maxCharacter, bool isFlip)
         {
+            string result = string.Empty;
+
             if (maxCharacter <= 0)
                 throw new Exception("Max character need to be greater than : 0");
 
@@ -137,16 +136,19 @@ namespace CGM208___Lesson_2___Exercise_2
                     bool isShouldPrint = (testFlag & pattern[i, 0]) == testFlag;
 
                     if (isShouldPrint) {
-                        Console.Write(character);
+                        result += character;
                     }
                     else {
-                        if (!isFlip)
-                            Console.Write(' ');
+                        if (!isFlip) {
+                            result += ' ';
+                        }
                     }
                 }
 
-                Console.WriteLine();
+                result += "\n";
             }
+
+            return result;
         }
     }
 }
